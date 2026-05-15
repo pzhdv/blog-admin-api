@@ -1,0 +1,88 @@
+# ========================= 应用基础配置 =========================
+# 应用服务 WEB 访问端口
+server:
+  port: 8080
+  tomcat:
+    max-swallow-size: -1 # 关闭Tomcat对大请求的限制（默认2MB）
+    max-http-form-post-size: -1  # 不限制表单提交大小
+  servlet:
+    context-path: /blogAdminApi  # 注意前缀的斜杠，代表根路径下的子路径
+
+# ========================= Spring 基础配置 =========================
+spring:
+  application:
+    name: blog-admin-api  # 应用名称（日志文件名、服务发现、监控等）
+  # 激活的环境配置（默认开发环境，可通过启动参数覆盖：--spring.profiles.active=prod）
+  profiles:
+    active: prod
+
+  #  resources:
+  #    add-mappings: false # 值为false时，不会将静态资源的URL路径添加到映射中，使404能走全局异常
+
+  # Spring MVC 配置：修复 SpringFox 3.0.0 与 Spring Boot 2.6+ 的兼容性问题
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher  # 使用 AntPathMatcher 替代默认的 PathPatternParser
+    throw-exception-if-no-handler-found: true # 解决springboot配置@ControllerAdvice不能捕获Exception问题
+  
+  # 配置日期格式化
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss #时间戳统一转换为指定格式
+    time-zone: GMT+8 #时区修改为东8区
+    default-property-inclusion: non_null #null时不序列化
+
+  servlet:
+    multipart:
+      # 单文件上传最大大小，默认1Mb
+      max-file-size: 10MB
+      # 多文件上传时最大大小,默认10Mb
+      max-request-size: 100MB
+
+# ========================= 自定义应用配置 =========================
+app:
+  # 业务代码基础包名（用于日志、Swagger等配置）
+  base-package: cn.pzhdv.blog
+
+# ========================= MyBatis-Plus 配置 =========================
+mybatis-plus:
+  # Mapper XML 文件位置
+  mapper-locations: classpath:mapper/*.xml
+  # 实体类包路径
+  type-aliases-package: ${app.base-package}.entity
+  configuration:
+    # 开启驼峰命名规则映射 例如实体类userName字段关联表中user_name的列
+    map-underscore-to-camel-case: true
+
+# ========================= JWT 配置 =========================
+jwt: #个人jwt配置
+  #签名秘钥
+  tokenSignKey: 5Zq7z4Y3Qz8fX9vB2C3dE4fG5hJ6kL7mN8oP9qR0sT1uV2wX3yZ4aB5cD6eF7gH8iJ9kL0mN1oP2qR3sT4uV5wX6yZ7aB8cD9eF
+  header: Authorization #token请求头
+  accessTokenExpire: 3600 #访问token有效期(秒) 1小时
+  refreshTokenExpire: 86400 #访问token有效期(秒) 1天
+
+# ========================= 日志基础配置 =========================
+# 说明：仅保留简单配置，详细配置由 logback-spring.xml 完成
+logging:
+  level:
+    root: INFO
+  file:
+    name: logs/application.log
+
+# ========================= Swagger/Knife4j 配置 =========================
+swagger:
+  config:
+    #hostName: 127.0.0.1:8080
+    groupName: 个人博客接口
+    title: 管理端 API 接口文档
+    description: 这是pzh博客管理端API接口
+    name: 潘宗晖
+    url: https://www.pzhdv.cn
+    serviceUrl: https://www.pzhdv.cn
+    email: 1939673715@qq.com
+    version: 1.0
+    basePackage: ${app.base-package}.controller
+    enableSwagger: true
+
+knife4j:
+  enable: true

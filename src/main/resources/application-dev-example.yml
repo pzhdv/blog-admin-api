@@ -1,0 +1,78 @@
+# ========================= 开发环境配置 =========================
+# 说明：开发环境特定配置，包括本地数据库、Redis、调试日志等
+
+spring:
+  # ========================= 数据源配置（开发环境） =========================
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pzh_blog?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    username: root
+    password: your_database_password
+    # HikariCP 连接池配置（开发环境）
+    hikari:
+      # ========================= 连接池核心配置 =========================
+      minimum-idle: 5
+      maximum-pool-size: 20
+      pool-name: BlogAdminHikariCP-Dev
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      # ========================= 连接验证配置 =========================
+      validation-timeout: 3000
+      # ========================= 连接泄漏检测 =========================
+      # 开发环境开启连接泄漏检测，帮助发现连接泄漏问题
+      leak-detection-threshold: 60000
+      # ========================= 性能优化配置 =========================
+      auto-commit: false
+      read-only: false
+      # ========================= 监控和统计 =========================
+      register-mbeans: true
+
+  # ========================= Redis 配置（开发环境） =========================
+  redis:
+    database: 9 #使用第0个数据库，一共默认有16个(0-15)
+    host: 127.0.0.1
+    port: 6379
+    password: your_redis_password
+
+# ========================= 跨域配置（开发环境） =========================
+cors:
+  # 允许的前端来源（只保留真实前端端口）
+  allowed-origins: http://localhost:9527,http://localhost:9725
+  # 允许的请求头
+  allowed-headers: Origin,Content-Type,Accept,Authorization,X-Requested-With,Token,Cookie,x-request-id
+  # 允许的请求方法
+  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+  # 允许携带 Cookie/Token 凭证
+  allow-credentials: true
+  # 允许前端读取的响应头
+  exposed-headers: Authorization,Refresh-Token
+  # 预检请求缓存时间
+  max-age: 1
+
+# ========================= 腾讯云COS配置（开发环境） =========================
+tencent:
+  cos:
+    secretId: your_tencent_cos_secret_id
+    secretKey: your_tencent_cos_secret_key
+    bucketName: your_cos_bucket_name
+    region: ap-chongqing
+    # baseUrl: https://cos.pzhdv.cn/
+
+# ========================= Swagger/Knife4j配置（开发环境） =========================
+knife4j:
+  basic:
+    enable: false
+
+# ========================= MyBatis-Plus 配置（开发环境） =========================
+mybatis-plus:
+  configuration:
+    # 开发环境输出SQL到控制台，便于调试
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# ========================= 日志配置（开发环境） =========================
+logging:
+  level:
+    root: INFO
+    org.springframework: WARN
+    ${app.base-package}: DEBUG

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.pzhdv.blog.mapper.BlogAuthorMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.pzhdv.blog.entity.BlogAuthor">
+        <id column="user_id" property="userId" />
+        <result column="full_name" property="fullName" />
+        <result column="avatar" property="avatar" />
+        <result column="position" property="position" />
+        <result column="self_introduction" property="selfIntroduction" />
+        <result column="email" property="email" />
+        <result column="website" property="website" />
+        <result column="github" property="github" />
+        <result column="phone" property="phone" />
+        <result column="user_nick" property="userNick" />
+        <result column="birthday" property="birthday" />
+        <result column="education_level" property="educationLevel" />
+        <result column="school_name" property="schoolName" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        user_id, full_name, avatar, position, self_introduction, email, website, github, phone, user_nick, birthday, education_level, school_name
+    </sql>
+
+</mapper>

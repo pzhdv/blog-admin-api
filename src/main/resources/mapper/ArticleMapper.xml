@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.pzhdv.blog.mapper.ArticleMapper">
+
+    <select id="queryArticleLineChart" resultType="cn.pzhdv.blog.vo.article.ArticleLineChartVO">
+        <![CDATA[
+        /* 最近12个月（含当月），月份无数据补0；MySQL 5 兼容 */
+        SELECT DATE_FORMAT(m.m_date, '%Y-%m') AS ym,
+               COALESCE(a.published_cnt, 0)   AS published_cnt,
+               COALESCE(a.draft_cnt, 0)       AS draft_cnt
+        FROM (
+                 /* 生成从当月起向前共12个月的每月第一天 */
+                 SELECT DATE_SUB(STR_TO_DATE(DATE_FORMAT(CURDATE(), '%Y-%m-01'), '%Y-%m-%d'),
+                                 INTERVAL n MONTH) AS m_date
+                 FROM (
+                          SELECT 0 AS n
+                          UNION ALL
+                          SELECT 1
+                          UNION ALL
+                          SELECT 2
+                          UNION ALL
+                          SELECT 3
+                          UNION ALL
+                          SELECT 4
+                          UNION ALL
+                          SELECT 5
+                          UNION ALL
+                          SELECT 6
+                          UNION ALL
+                          SELECT 7
+                          UNION ALL
+                          SELECT 8
+                          UNION ALL
+                          SELECT 9
+                          UNION ALL
+                          SELECT 10
+                          UNION ALL
+                          SELECT 11
+                      ) AS nums
+             ) AS m
+                 LEFT JOIN (
+            /* 聚合文章为每月第一天，限制在最近12个月窗口内 */
+            SELECT STR_TO_DATE(DATE_FORMAT(create_time, '%Y-%m-01'), '%Y-%m-%d')   AS m_date,
+                   SUM(CASE WHEN COALESCE(publish_state, 0) = 1 THEN 1 ELSE 0 END) AS published_cnt,
+                   SUM(CASE WHEN COALESCE(publish_state, 0) = 0 THEN 1 ELSE 0 END) AS draft_cnt
+            FROM article
+            WHERE create_time >= DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 11 MONTH)
+              AND create_time < DATE_ADD(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH)
+            GROUP BY m_date
+        ) AS a
+                           ON a.m_date = m.m_date
+        ORDER BY m.m_date;
+        ]]>
+    </select>
+
+    <select id="queryArticleTotal" resultType="cn.pzhdv.blog.vo.article.ArticleTotalVO">
+        -- 单行返回：文章总数(3)、已发布(2)、草稿(1)
+        SELECT COUNT(*)                                           AS total_count,
+               SUM(CASE WHEN publish_state = 1 THEN 1 ELSE 0 END) AS published_count,
+               SUM(CASE WHEN publish_state = 0 THEN 1 ELSE 0 END) AS draft_count
+        FROM article;
+    </select>
+
+</mapper>
