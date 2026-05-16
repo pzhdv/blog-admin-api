@@ -176,7 +176,7 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>cn.pzhdv.blog.BlogAdminApiApplication</mainClass>
-                    <!-- 打包时设置为false 在控制打包：mvn clean package -Pprod -->
+                    <!-- 打包时设置为false 在控制打包：mvn clean package "-Dmaven.test.skip=true" -->
                     <skip>false</skip>
                 </configuration>
                 <executions>

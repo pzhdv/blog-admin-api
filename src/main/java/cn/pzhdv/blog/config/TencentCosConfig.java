@@ -5,7 +5,6 @@ import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
 import com.qcloud.cos.http.HttpProtocol;
 import com.qcloud.cos.region.Region;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +34,6 @@ import org.springframework.context.annotation.Configuration;
  * @see <a href="https://cloud.tencent.com/document/product/436/10199">腾讯云COS Java SDK官方文档</a>
  */
 @Configuration
-@Getter
 public class TencentCosConfig {
 
     /** 腾讯云COS API密钥ID（从YML配置注入） */
@@ -69,6 +67,15 @@ public class TencentCosConfig {
         ClientConfig clientConfig = new ClientConfig(new Region(region));
         // 强制使用HTTPS协议，提升传输安全性
         clientConfig.setHttpProtocol(HttpProtocol.https);
+        // --- 性能优化配置 ---
+        // 1. 设置连接超时（建立连接等待时间，单位：毫秒）
+        clientConfig.setConnectionTimeout(50000);
+        // 2. 设置 Socket 超时（数据传输等待时间，建议设置长一点防止大文件传输中途超时）
+        clientConfig.setSocketTimeout(50000);
+        // 3. 设置最大重试次数（防止由于抖动导致的偶发失败）
+        clientConfig.setMaxErrorRetry(3);
+        // 4. 设置连接池大小（默认 50，如果批量上传频繁，建议加大）
+        clientConfig.setMaxConnectionsCount(100);
         // 创建并返回COS客户端实例
         return new COSClient(cred, clientConfig);
     }
