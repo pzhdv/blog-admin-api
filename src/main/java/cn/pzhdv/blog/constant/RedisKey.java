@@ -50,7 +50,10 @@ public class RedisKey {
     public static final String ARTICLE_PUBLISH_DATE_LIST_KEY = "article:publish:date:list";
     public static final String ARTICLE_HOME_PAGE_LIST_KEY = "article:home:page:list";
     public static final String ARTICLE_CATEGORY_PAGE_LIST_KEY = "article:category:page:list";
-    public static final String ARTICLE_DETAIL_KEY = "article:detail:";
+    // 文章详情 markdown
+    public static final String ARTICLE_DETAIL_MARKDOWN_KEY = "article:detail:markdown:";
+    // 文章详情 html
+    public static final String ARTICLE_DETAIL_HTML_KEY = "article:detail:html:";
     // 博主/履历信息
     public static final String BLOG_AUTHOR_CACHE_KEY = "blog:author:cache";
     public static final String BLOG_MISSION_CACHE_KEY = "blog:mission:cache";

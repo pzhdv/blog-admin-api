@@ -3,6 +3,7 @@ package cn.pzhdv.blog.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -10,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 跨域配置类
@@ -64,20 +65,34 @@ public class CrossConfig implements WebMvcConfigurer {
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
 
-        // 1. 配置允许的源（拆分逗号分隔的字符串为列表）
-        List<String> originList = Arrays.asList(allowedOrigins.split(","));
-        // 兼容SpringBoot 2.4+：解决*与allowCredentials冲突问题
-        if (originList.contains("*")) {
-            corsConfig.setAllowedOriginPatterns(List.of("*"));
-        } else {
-            corsConfig.setAllowedOrigins(originList);
+        // 1. 配置允许的源：使用 stream 处理 trim() 去掉空格
+        if (StringUtils.hasText(allowedOrigins)) {
+            corsConfig.setAllowedOriginPatterns(
+                    Arrays.stream(allowedOrigins.split(","))
+                            .map(String::trim)
+                            .collect(Collectors.toList())
+            );
         }
 
         // 2. 配置允许的请求头
-        corsConfig.setAllowedHeaders(Arrays.asList(allowedHeaders.split(",")));
+        if (StringUtils.hasText(allowedHeaders)) {
+            if ("*".equals(allowedHeaders)) {
+                corsConfig.addAllowedHeader("*");
+            } else {
+                corsConfig.setAllowedHeaders(
+                        Arrays.stream(allowedHeaders.split(","))
+                                .map(String::trim)
+                                .collect(Collectors.toList())
+                );
+            }
+        }
 
         // 3. 配置允许的HTTP方法
-        corsConfig.setAllowedMethods(Arrays.asList(allowedMethods.split(",")));
+        corsConfig.setAllowedMethods(
+                Arrays.stream(allowedMethods.split(","))
+                        .map(String::trim)
+                        .collect(Collectors.toList())
+        );
 
         // 4. 配置是否允许携带凭证
         corsConfig.setAllowCredentials(allowCredentials);

@@ -163,8 +163,7 @@ public class ArticleTagController {
             produces = "application/json")
     @DeleteMapping("delete/{articleTagId}")
     public Result<Boolean> deleteTag(
-            @ApiParam(name = "articleTagId", value = "标签ID（≥1）", required = true)
-            @PathVariable("articleTagId")
+            @PathVariable @ApiParam(name = "articleTagId", value = "标签ID（≥1）", required = true)
             @Min(value = 1, message = "标签ID必须≥1")
             Long articleTagId) {
         // 执行删除（Service层需校验：标签是否关联文章，关联则返回false）
@@ -194,7 +193,8 @@ public class ArticleTagController {
     private void clearRelatedArticleCache() {
         redisUtils.del(RedisKey.ARTICLE_TOTAL_KEY);
         redisUtils.del(RedisKey.ARTICLE_PUBLISH_DATE_LIST_KEY);
-        redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_DETAIL_KEY + "*");
+        redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_DETAIL_MARKDOWN_KEY + "*");
+        redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_DETAIL_HTML_KEY + "*");
         redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_HOME_PAGE_LIST_KEY + "*");
         redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_CATEGORY_PAGE_LIST_KEY + "*");
         redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_CONDITION_PAGE_LIST_KEY + "*");

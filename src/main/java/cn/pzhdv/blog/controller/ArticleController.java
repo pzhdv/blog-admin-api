@@ -228,7 +228,7 @@ public class ArticleController {
             Long articleId) {
 
         // 1. 构建缓存键
-        String redisKey = RedisKey.ARTICLE_DETAIL_KEY + articleId;
+        String redisKey = RedisKey.ARTICLE_DETAIL_MARKDOWN_KEY + articleId;
 
         // 2. 从缓存获取
         Article article = redisUtils.get(redisKey, Article.class);
@@ -492,8 +492,10 @@ public class ArticleController {
         redisUtils.del(RedisKey.ARTICLE_TOTAL_KEY);
         // 发布日期列表缓存
         redisUtils.del(RedisKey.ARTICLE_PUBLISH_DATE_LIST_KEY);
-        // 文章详情缓存（所有）
-        redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_DETAIL_KEY + "*");
+        // 文章详情缓存 markdown（所有）
+        redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_DETAIL_MARKDOWN_KEY + "*");
+        // 文章详情缓存 html（所有）
+        redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_DETAIL_HTML_KEY + "*");
         // 首页文章列表缓存
         redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_HOME_PAGE_LIST_KEY + "*");
         // 分类文章列表缓存

@@ -209,7 +209,8 @@ public class ArticleCategoryController {
         // 清除关联的文章缓存
         redisUtils.del(RedisKey.ARTICLE_TOTAL_KEY);
         redisUtils.del(RedisKey.ARTICLE_PUBLISH_DATE_LIST_KEY);
-        redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_DETAIL_KEY + "*");
+        redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_DETAIL_MARKDOWN_KEY + "*");
+        redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_DETAIL_HTML_KEY + "*");
         redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_HOME_PAGE_LIST_KEY + "*");
         redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_CATEGORY_PAGE_LIST_KEY + "*");
         redisUtils.deleteKeysByPattern(RedisKey.ARTICLE_CONDITION_PAGE_LIST_KEY + "*");
